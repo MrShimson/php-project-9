@@ -1,4 +1,4 @@
-### Page-analyzer startup page:
+### Page-analyzer main page:
 https://page-analyzer-unique.onrender.com/
 
 ### Hexlet tests and linter status:
