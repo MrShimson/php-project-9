@@ -30,33 +30,31 @@
     </header>
 
     <main class="flex-fill">
-      <div class="row my-3">
-        <!-- Для больших экранов -->
-        <div class="d-none d-lg-block col-xxl-6 col-xl-7 col-8 mx-auto">
-          <div class="container-fluid p-5 border rounded bg-light">
-            <h1 class="display-3">Анализатор страниц</h1>
-            <p class="lead">Бесплатно проверяйте сайты на SEO пригодность</p>
-            <form class="d-flex flex-row" action="/urls" method="post">
-              <input class="form-control form-control-lg" type="text" placeholder="https://example.com" name="url">
-                <div class="mx-5 my-0">
-                  <input class="btn btn-primary btn-lg px-5 text-uppercase" type="submit" value="Проверить">
-                </div>
-            </form>
-          </div>
+      <!-- Для больших экранов -->
+      <div class="d-none d-lg-block col-xxl-6 col-xl-7 col-8 mx-auto my-3">
+        <div class="container-fluid p-5 border rounded bg-light">
+          <h1 class="display-3">Анализатор страниц</h1>
+          <p class="lead">Бесплатно проверяйте сайты на SEO пригодность</p>
+          <form class="d-flex flex-row" action="/urls" method="post">
+            <input class="form-control form-control-lg" type="text" placeholder="https://example.com" name="url">
+              <div class="mx-5 my-0">
+                <input class="btn btn-primary btn-lg px-5 text-uppercase" type="submit" value="Проверить">
+              </div>
+          </form>
         </div>
+      </div>
 
-        <!-- Для средних и маленьких экранов-->
-        <div class="d-lg-none col-md-10 col-12 mx-auto">
-          <div class="container-fluid p-md-3 p-auto border rounded bg-light text-center">
-            <h1 class="display-4">Анализатор страниц</h1>
-            <p class="lead" style="font-size: 1rem">Бесплатно проверяйте сайты на SEO пригодность</p>
-            <form class="d-flex flex-md-row flex-column" action="/urls" method="post">
-              <input class="form-control" type="text" placeholder="https://example.com" name="url">
-                <div class="align-self-center mx-md-3 mx-0 my-md-0 my-3">
-                  <input class="btn btn-primary btn-md px-4 text-uppercase" type="submit" value="Проверить">
-                </div>
-            </form>
-          </div>
+      <!-- Для средних и маленьких экранов-->
+      <div class="d-lg-none col-md-10 col-12 mx-auto my-3">
+        <div class="container-fluid p-md-3 p-auto border rounded bg-light text-center">
+          <h1 class="display-4">Анализатор страниц</h1>
+          <p class="lead" style="font-size: 1rem">Бесплатно проверяйте сайты на SEO пригодность</p>
+          <form class="d-flex flex-md-row flex-column" action="/urls" method="post">
+            <input class="form-control" type="text" placeholder="https://example.com" name="url">
+              <div class="align-self-center mx-md-3 mx-0 my-md-0 my-3">
+                <input class="btn btn-primary btn-md px-4 text-uppercase" type="submit" value="Проверить">
+              </div>
+          </form>
         </div>
       </div>
     </main>
