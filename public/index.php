@@ -14,6 +14,10 @@ $app->addErrorMiddleware(true, true, true);
 
 $app->get('/', function ($request, $response) {
     return $this->get('renderer')->render($response, 'main.phtml');
-});
+})->setName('main');
+
+$app->get('/urls', function ($request, $response) {
+    return $this->get('renderer')->render($response, 'urls.phtml');
+})->setName('urls');
 
 $app->run();
