@@ -19,6 +19,9 @@ test-coverage:
 test-coverage-text:
 	composer exec --verbose phpunit tests -- --coverage-text
 
+set-database:
+	psql -a -d $(DATABASE_URL) -f database.sql
+
 PORT ?= 8000
 start:
 	PHP_CLI_SERVER_WORKERS=5 php -S 0.0.0.0:$(PORT) -t public
