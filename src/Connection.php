@@ -5,7 +5,7 @@ namespace App;
 final class Connection
 {
     private static ?Connection $connection = null;
-    
+
     public function connect(): \PDO
     {
         // Парсинг переменной окружения DATABASE_URL
@@ -42,5 +42,5 @@ final class Connection
 
     private function __construct()
     {
-    } 
+    }
 }
