@@ -56,7 +56,7 @@ class DBHandler implements DBHandlerInterface
         // Добавляет данные из массива $checkData
         // (где ключи - названия столбцов, а значения - результаты проверки)
         // в таблицу checks с заданным в $id url_id
-        if (empty($values)) {
+        if (empty($checkData)) {
             $query = "INSERT INTO checks (url_id) VALUES (:id)";
 
             $statement = $this->pdo->prepare($query);
