@@ -70,7 +70,7 @@ class DBHandler implements DBHandlerInterface
     public function getChecks(int $id): array
     {
         // Возвращает все проверки для URL с заданным ID
-        $query = "SELECT * FROM checks WHERE url_id=:id ORDER BY id DESC";
+        $query = "SELECT * FROM checks WHERE url_id=:id AND created_at IS NOT NULL ORDER BY id DESC";
 
         $statement = $this->pdo->prepare($query);
         $statement->bindValue(':id', $id);
