@@ -51,20 +51,25 @@ class DBHandler implements DBHandlerInterface
         return $statement->fetch(\PDO::FETCH_ASSOC);
     }
 
+    public function getUrlIdsWithNames(): array
+    {
+        $query = "SELECT id, name FROM urls ORDER BY id DESC";
+
+        return $this->pdo->query($query, \PDO::FETCH_ASSOC)->fetchAll();
+    }
+
     public function addCheck(int $id, array $checkData = []): void
     {
         // Добавляет данные из массива $checkData
         // (где ключи - названия столбцов, а значения - результаты проверки)
         // в таблицу checks с заданным в $id url_id
-        if (empty($checkData)) {
-            $query = "INSERT INTO checks (url_id) VALUES (:id)";
+        $query = "INSERT INTO checks (url_id, created_at) VALUES (:id, :time)";
+        $time = Carbon::now();
 
-            $statement = $this->pdo->prepare($query);
-            $statement->bindValue(':id', $id);
-            $statement->execute();
-        } else {
-            // *Добавляет данные проверки?!
-        }
+        $statement = $this->pdo->prepare($query);
+        $statement->bindValue(':id', $id);
+        $statement->bindValue(':time', $time);
+        $statement->execute();
     }
 
     public function getChecks(int $id): array
@@ -83,14 +88,31 @@ class DBHandler implements DBHandlerInterface
     {
         // Выборка последних проверок для каждого URL из
         // объединения двух таблиц
-        $query = "SELECT DISTINCT ON (urls.id)
-        urls.id,
-        urls.name,
-        checks.status_code,
-        checks.created_at
-        FROM urls JOIN checks ON urls.id=checks.url_id
-        ORDER BY urls.id DESC, checks.created_at DESC";
+        $table = $this->getUrlIdsWithNames();
 
-        return $this->pdo->query($query, \PDO::FETCH_ASSOC)->fetchAll();
+        $callback = function ($row) {
+            $query = "SELECT
+            urls.id,
+            urls.name,
+            checks.created_at,
+            checks.status_code
+            FROM urls JOIN checks ON urls.id=checks.url_id
+            WHERE urls.id=:id
+            ORDER BY checks.created_at DESC LIMIT 1";
+
+            $statement = $this->pdo->prepare($query);
+            $statement->bindValue(':id', $row['id']);
+            $statement->execute();
+
+            $result = $statement->fetch(\PDO::FETCH_ASSOC);
+
+            if ($result === false) {
+                return $row;
+            }
+
+            return $result;
+        };
+
+        return array_map($callback, $table);
     }
 }

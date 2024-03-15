@@ -68,7 +68,6 @@ $app->post('/urls', function ($request, $response) use ($router) {
         if (is_null($id)) {
             $dbh->addUrl($name);
             $id = $dbh->getUrlIdByName($name);
-            $dbh->addCheck($id);
             $this->get('flash')->addMessage('success', 'Страница успешно добавлена');
         } else {
             $this->get('flash')->addMessage('success', 'Страница уже существует');
@@ -85,6 +84,15 @@ $app->post('/urls', function ($request, $response) use ($router) {
 
         return $this->get('renderer')->render($response, 'main.phtml', $params);
     }
+});
+
+$app->post('/urls/{url_id}/checks', function ($request, $response, array $args) use ($router) {
+    $id = $args['url_id'];
+    $dbh = new DBHandler(Connection::get()->connect());
+
+    $dbh->addCheck($id);
+
+    return $response->withRedirect($router->urlFor('current', ['id' => $id]));
 });
 
 $app->run();
