@@ -7,6 +7,8 @@ use DI\Container;
 use Valitron\Validator;
 use App\Connection;
 use App\DBHandler;
+use GuzzleHttp\Client;
+use App\Checker;
 
 session_start();
 
@@ -37,7 +39,9 @@ $app->get('/urls/{id}', function ($request, $response, array $args) {
     $params['url'] = $dbh->getUrl($id);
     $params['checks'] = $dbh->getChecks($id);
     $flash = $this->get('flash')->getMessages();
-    $params['flash'] = empty($flash) ? null : $flash['success'][0];
+    if (!empty($flash)) {
+        $params['flash'] = $flash;
+    }
 
     return $this->get('renderer')->render($response, 'current.phtml', $params);
 })->setName('current');
@@ -89,8 +93,21 @@ $app->post('/urls', function ($request, $response) use ($router) {
 $app->post('/urls/{url_id}/checks', function ($request, $response, array $args) use ($router) {
     $id = $args['url_id'];
     $dbh = new DBHandler(Connection::get()->connect());
+    $checker = new Checker(new Client());
+    $url = $dbh->getUrl($id);
 
-    $dbh->addCheck($id);
+    $check = $checker->checkUrl($url['name']);
+
+    if (empty($check['error'])) {
+        $dbh->addCheck($id, $check['data']);
+    } else {
+        if (empty($check['data'])) {
+            $this->get('flash')->addMessage('error', $check['error']);
+        } else {
+            $dbh->addCheck($id, $check['data']);
+            $this->get('flash')->addMessage('warning', $check['error']);
+        }
+    }
 
     return $response->withRedirect($router->urlFor('current', ['id' => $id]));
 });

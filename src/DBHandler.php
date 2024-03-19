@@ -58,17 +58,45 @@ class DBHandler implements DBHandlerInterface
         return $this->pdo->query($query, \PDO::FETCH_ASSOC)->fetchAll();
     }
 
+    private function buildCheckQuery(array $data): string
+    {
+        $columns = array_keys($data);
+        $format = "INSERT INTO checks (%s) VALUES (%s)";
+
+        $columnsString = '';
+        $valuesString = '';
+        $lastKey = array_key_last($columns);
+
+        foreach ($columns as $key => $value) {
+            if ($key === $lastKey) {
+                $columnsString .= "{$value}";
+                $valuesString .= ":{$value}";
+            } else {
+                $columnsString .= "{$value}, ";
+                $valuesString .= ":{$value}, ";
+            }
+        }
+
+        return sprintf($format, $columnsString, $valuesString);
+    }
+
     public function addCheck(int $id, array $checkData = []): void
     {
-        // Добавляет данные из массива $checkData
-        // (где ключи - названия столбцов, а значения - результаты проверки)
-        // в таблицу checks с заданным в $id url_id
-        $query = "INSERT INTO checks (url_id, created_at) VALUES (:id, :time)";
+        // Собирает массив $row со всеми данными проверки
+        // (где ключи - названия столбцов, а значения - результаты проверки),
+        // создает из ключей массива $row строку запроса и заносит все данные
+        // в таблицу checks
         $time = Carbon::now();
+        $row = array_merge(['url_id' => $id], $checkData, ['created_at' => $time]);
+
+        $query = $this->buildCheckQuery($row);
 
         $statement = $this->pdo->prepare($query);
-        $statement->bindValue(':id', $id);
-        $statement->bindValue(':time', $time);
+
+        foreach ($row as $key => $value) {
+            $statement->bindValue(":{$key}", $value);
+        }
+
         $statement->execute();
     }
 
