@@ -82,10 +82,10 @@
                   </a>
                 </td>
                 <td>
-                  <?= $row['created_at'] ?>
+                  <?= isset($row['created_at']) ? $row['created_at'] : null ?>
                 </td>
                 <td>
-                  <?= $row['status_code'] ?>
+                  <?= isset($row['status_code']) ? $row['status_code'] : null ?>
                 </td>
               </tr>
             <?php endforeach; ?>
