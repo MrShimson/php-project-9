@@ -100,6 +100,7 @@ $app->post('/urls/{url_id}/checks', function ($request, $response, array $args) 
 
     if (empty($check['error'])) {
         $dbh->addCheck($id, $check['data']);
+        $this->get('flash')->addMessage('success', 'Страница успешно проверена');
     } else {
         if (empty($check['data'])) {
             $this->get('flash')->addMessage('error', $check['error']);
