@@ -36,18 +36,11 @@
     <main class="row container-fluid px-0 mx-0">
       <div class="col-md-8 col-sm-10 col-12 mx-auto mt-sm-3 mt-2">
         <h1 class="d-none d-sm-block">Сайты</h1>
-        <h1 class="d-sm-none text-center">Сайты</h1>
       </div>
       <div class="col-md-8 col-sm-10 col-12 mx-auto">
-        <table class="table table-bordered table-hover">
-          <thead class="table-dark" data-test="urls">
+        <table class="table table-bordered table-hover" data-test="urls">
+          <thead class="table-dark">
             <tr class="d-none d-sm-table-row">
-              <th>ID</th>
-              <th>Имя</th>
-              <th>Последняя проверка</th>
-              <th>Код ответа</th>
-            </tr>
-            <tr class="d-sm-none small">
               <th>ID</th>
               <th>Имя</th>
               <th>Последняя проверка</th>
@@ -57,22 +50,6 @@
           <tbody>
             <?php foreach ($table as $row) : ?>
               <tr class="d-none d-sm-table-row">
-                <th scope="row">
-                  <?= $row['id'] ?>
-                </th>
-                <td>
-                  <a href="/urls/<?= $row['id'] ?>">
-                    <?= $row['name'] ?>
-                  </a>
-                </td>
-                <td>
-                  <?= isset($row['created_at']) ? $row['created_at'] : null ?>
-                </td>
-                <td>
-                  <?= isset($row['status_code']) ? $row['status_code'] : null ?>
-                </td>
-              </tr>
-              <tr class="d-sm-none small">
                 <th scope="row">
                   <?= $row['id'] ?>
                 </th>
