@@ -25,7 +25,7 @@ class DBHandler implements DBHandlerInterface
         $statement->execute();
     }
 
-    public function getUrlIdByName(string $url): int|null
+    public function getUrlIdByName(string $url): string
     {
         // Возвращает ID записи по заданному URL из таблицы urls
         $query = "SELECT id FROM urls WHERE name=:name";
@@ -36,7 +36,7 @@ class DBHandler implements DBHandlerInterface
 
         $result = $statement->fetch(\PDO::FETCH_ASSOC);
 
-        return $result === false ? null : $result['id'];
+        return $result === false ? '' : (string) $result['id'];
     }
 
     public function getUrl(int $id): array

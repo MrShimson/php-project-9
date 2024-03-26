@@ -24,7 +24,7 @@ class Checker implements CheckerInterface
             $data = null;
         }
 
-        return $data;
+        return (string) $data;
     }
 
     public function checkUrl(string $url): array

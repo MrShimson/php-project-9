@@ -65,11 +65,12 @@ $app->post('/urls', function ($request, $response) use ($router) {
         $name = $url['name'];
         $len = strlen($name);
         $name = str_ends_with($name, '/') ? substr($name, 0, $len - 1) : $name;
-        // Добавление записи в таблицу urls БД и пустой записи в таблицу checks БД
-        // (для корректного начального отображения страницы 'Сайты')
+        // Добавление записи в таблицу urls БД (или пропуск добавления записи
+        // в случае её существования) и флеш-сообщения
+        // и редирект на страницу конкретного URL
         $dbh = new DBHandler(Connection::get()->connect());
         $id = $dbh->getUrlIdByName($name);
-        if (is_null($id)) {
+        if (empty($id)) {
             $dbh->addUrl($name);
             $id = $dbh->getUrlIdByName($name);
             $this->get('flash')->addMessage('success', 'Страница успешно добавлена');
@@ -80,7 +81,7 @@ $app->post('/urls', function ($request, $response) use ($router) {
         return $response->withRedirect($router->urlFor('current', ['id' => $id]));
     } else {
         $errors = $validator->errors();
-        $mainError = $errors['name'][0];
+        $mainError = is_array($errors) ? $errors['name'][0] : 'Непредвиденная ошибка';
         $params = [
             'name' => $url['name'],
             'error' => $mainError
