@@ -51,7 +51,6 @@
       <?php endif; ?>
       <div class="col-md-8 col-sm-10 col-12 mx-auto mt-sm-3 mt-2">
         <h1 class="d-none d-sm-block">Сайт: <?= $url['name'] ?></h1>
-        <h1 class="d-sm-none text-center">Сайт: <?= $url['name'] ?></h1>
       </div>
       <div class="col-md-8 col-sm-10 col-12 mx-auto mt-2 mb-sm-5 mb-0">
         <table class="table table-bordered" data-test="url">
@@ -60,23 +59,11 @@
               <th scope="row">ID</th>
               <td><?= $url['id'] ?></td>
             </tr>
-            <tr class="d-sm-none small">
-              <th scope="row">ID</th>
-              <td><?= $url['id'] ?></td>
-            </tr>
             <tr class="d-none d-sm-table-row">
               <th scope="row">Имя</th>
               <td><?= $url['name'] ?></td>
             </tr>
-            <tr class="d-sm-none small">
-              <th scope="row">Имя</th>
-              <td><?= $url['name'] ?></td>
-            </tr>
             <tr class="d-none d-sm-table-row">
-              <th scope="row">Дата создания</th>
-              <td><?= $url['created_at'] ?></td>
-            </tr>
-            <tr class="d-sm-none small">
               <th scope="row">Дата создания</th>
               <td><?= $url['created_at'] ?></td>
             </tr>
@@ -89,14 +76,6 @@
           <input class="btn btn-primary btn-md" type="submit" value="Запустить проверку">
         </form>
       </div>
-      <div class="d-sm-none col-12 mx-auto mb-3">
-        <h2 class="text-center">Проверки</h2>
-        <div class="col-6 mt-3 mx-auto">
-          <form action="/urls/<?= $url['id'] ?>/checks" method="post">
-            <input class="btn btn-primary btn-md col-12" type="submit" value="Запустить проверку">
-          </form>
-        </div>
-      </div>
       <div class="col-md-8 col-sm-10 col-12 mx-auto">
         <table class="table table-bordered table-hover" data-test="checks">
           <thead class="table-dark">
@@ -108,38 +87,10 @@
               <th>description</th>
               <th>Дата создания</th>
             </tr>
-            <tr class="d-sm-none small">
-              <th>ID</th>
-              <th>Код ответа</th>
-              <th>h1</th>
-              <th>title</th>
-              <th>description</th>
-              <th>Дата создания</th>
-            </tr>
           </thead>
           <tbody>
             <?php foreach ($checks as $row) : ?>
               <tr class="d-none d-sm-table-row">
-                <td>
-                  <?= $row['id'] ?>
-                </td>
-                <td>
-                  <?= $row['status_code'] ?>
-                </td>
-                <td>
-                  <?= $row['h1'] ?>
-                </td>
-                <td>
-                  <?= $row['title'] ?>
-                </td>
-                <td>
-                  <?= $row['description'] ?>
-                </td>
-                <td>
-                  <?= $row['created_at'] ?>
-                </td>
-              </tr>
-              <tr class="d-sm-none small">
                 <td>
                   <?= $row['id'] ?>
                 </td>
