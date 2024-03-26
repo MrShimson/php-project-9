@@ -13,7 +13,7 @@ class Checker implements CheckerInterface
         $this->client = $client;
     }
 
-    private function getTagDataFromHtml(string $url, string $tag): \DOMElement|null
+    private function getTagDataFromHtml(string $url, string $tag)
     {
         $body = $this->client->request('GET', $url, ['http_errors' => true])->getBody()->getContents();
         $document = new Document($body);
