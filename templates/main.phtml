@@ -63,37 +63,6 @@
           </form>
         </div>
       </div>
-
-      <!-- Для средних и маленьких экранов-->
-      <div class="d-lg-none col-md-10 col-12 mx-auto my-3 px-0">
-        <div class="container-fluid border rounded bg-light p-0">
-          <div class="row my-3 mx-5 mb-0 text-center">
-            <h1 class="display-4">Анализатор страниц</h1>
-            <p class="lead" style="font-size: 1rem">Бесплатно проверяйте сайты на SEO пригодность</p>
-          </div>
-          <form class="row my-3 mx-5 mt-0" action="/urls" method="post">
-            <div class="d-flex flex-column">
-              <div>
-                <?php if (isset($error)): ?>
-                  <input class="form-control is-invalid" type="text" value="<?= htmlspecialchars($name) ?>" name="url[name]">
-                  <div class="invalid-feedback">
-                    <p class="small text-center mb-0">
-                      <?= $error ?>
-                    </p>
-                  </div>
-                <?php else: ?>
-                  <input class="form-control" type="text" placeholder="https://example.com" name="url[name]">
-                <?php endif; ?>
-              </div>
-              <div class="align-self-center my-3">
-                <input class="btn btn-primary btn-md px-4 text-uppercase" type="submit" value="Проверить">
-              </div>
-            </div>
-          </form>
-        </div>
-      </div>
-    </main>
-
     <footer class="fixed-bottom">
       <div class="container-fluid">
         <div class="row border-top py-3 text-center">
