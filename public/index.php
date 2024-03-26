@@ -86,7 +86,7 @@ $app->post('/urls', function ($request, $response) use ($router) {
             'error' => $mainError
         ];
 
-        return $this->get('renderer')->render($response, 'main.phtml', $params);
+        return $this->get('renderer')->render($response->withStatus(422), 'main.phtml', $params);
     }
 });
 
