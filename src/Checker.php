@@ -4,7 +4,7 @@ namespace App;
 
 use DiDom\Document;
 
-class Checker implements CheckerInterface
+class Checker implements \App\Interfaces\CheckerInterface
 {
     private \GuzzleHttp\Client $client;
 

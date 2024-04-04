@@ -4,7 +4,7 @@ namespace App;
 
 use Carbon\Carbon;
 
-class DBHandler implements DBHandlerInterface
+class DBHandler implements \App\Interfaces\DBHandlerInterface
 {
     private \PDO $pdo;
 

@@ -7,7 +7,7 @@
         "psr-4": {
             "App\\": [
                 "src/",
-                "src/interfaces/"
+                "src/Interfaces/"
             ]
         }
     },
