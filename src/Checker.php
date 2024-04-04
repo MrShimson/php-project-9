@@ -13,20 +13,6 @@ class Checker implements CheckerInterface
         $this->client = $client;
     }
 
-    private function getTagDataFromHtml(string $url, string $tag)
-    {
-        $body = $this->client->request('GET', $url, ['http_errors' => true])->getBody()->getContents();
-        $document = new Document($body);
-
-        if ($document->has($tag)) {
-            $data = $document->first($tag);
-        } else {
-            $data = null;
-        }
-
-        return $data;
-    }
-
     public function checkUrl(string $url): array
     {
         // Производит проверку и возвращает её данные в виде массива,
@@ -42,22 +28,20 @@ class Checker implements CheckerInterface
                 'error' => $message,
                 'data' => null
             ];
-        } catch (\GuzzleHttp\Exception\ClientException $error) {
-            $message = 'Проверка была выполнена успешно, но сервер ответил с ошибкой';
-            $data = ['status_code' => $error->getCode()];
+        } catch (\GuzzleHttp\Exception\RequestException $error) {
+            $response = $error->getResponse();
 
-            return [
-                'error' => $message,
-                'data' => $data
-            ];
-        } catch (\GuzzleHttp\Exception\ServerException $error) {
-            $message = 'Проверка была выполнена успешно, но сервер ответил с ошибкой';
-            $data = ['status_code' => $error->getCode()];
+            if (empty($response)) {
+                $message = $error->getMessage();
+                $formatted = "Непредвиденная ошибка при проверке: {$message}";
 
-            return [
-                'error' => $message,
-                'data' => $data
-            ];
+                return [
+                    'error' => $formatted,
+                    'data' => null
+                ];
+            }
+
+            $message = 'Проверка была выполнена успешно, но сервер ответил с ошибкой';
         }
 
         $status = $response->getStatusCode();
@@ -65,24 +49,23 @@ class Checker implements CheckerInterface
             'status_code' => $status
         ];
 
+        $html = new Document($response->getBody()->getContents());
         $tags = [
             'h1' => 'h1::text',
             'title' => 'title::text',
             'description' => 'meta[name="description"]::attr(content)'
         ];
 
-        foreach ($tags as $key => $value) {
-            $tagData = $this->getTagDataFromHtml($url, $value);
-
-            if (is_null($tagData)) {
+        foreach ($tags as $tagName => $tagScheme) {
+            if ($html->has($tagScheme)) {
+                $data[$tagName] = $html->first($tagScheme);
+            } else {
                 continue;
             }
-
-            $data[$key] = $tagData;
         }
 
         return [
-            'error' => null,
+            'error' => isset($message) ? $message : null,
             'data' => $data
         ];
     }
