@@ -19,32 +19,35 @@ $container->set('renderer', function () {
 $container->set('flash', function () {
     return new \Slim\Flash\Messages();
 });
+
 $app = AppFactory::createFromContainer($container);
 $app->addErrorMiddleware(true, true, true);
 
 $app->get('/', function ($request, $response) {
-    return $this->get('renderer')->render($response, 'main.phtml');
-})->setName('main');
+    return $this->get('renderer')->render($response, 'main.index.phtml');
+})->setName('main.index');
 
 $app->get('/urls', function ($request, $response) {
     $dbh = new DBHandler(Connection::get()->connect());
     $params['table'] = $dbh->getUrlsWithLastCheck();
 
-    return $this->get('renderer')->render($response, 'urls.phtml', $params);
-})->setName('urls');
+    return $this->get('renderer')->render($response, 'urls.index.phtml', $params);
+})->setName('urls.index');
 
 $app->get('/urls/{id}', function ($request, $response, array $args) {
-    $id = $args['id'];
     $dbh = new DBHandler(Connection::get()->connect());
+
+    $id = $args['id'];
     $params['url'] = $dbh->getUrl($id);
     $params['checks'] = $dbh->getChecks($id);
     $flash = $this->get('flash')->getMessages();
+
     if (!empty($flash)) {
         $params['flash'] = $flash;
     }
 
-    return $this->get('renderer')->render($response, 'current.phtml', $params);
-})->setName('current');
+    return $this->get('renderer')->render($response, 'urls.show.phtml', $params);
+})->setName('urls.show');
 
 $router = $app->getRouteCollector()->getRouteParser();
 
@@ -58,7 +61,6 @@ $app->post('/urls', function ($request, $response) use ($router) {
     ->message('Некорректный URL')
     ->rule('url', 'name')
     ->message('Некорректный URL');
-
 
     if ($validator->validate()) {
         // Подготовка имени к добавлению в БД
@@ -78,7 +80,7 @@ $app->post('/urls', function ($request, $response) use ($router) {
             $this->get('flash')->addMessage('success', 'Страница уже существует');
         }
 
-        return $response->withRedirect($router->urlFor('current', ['id' => $id]));
+        return $response->withRedirect($router->urlFor('urls.show', ['id' => $id]));
     } else {
         $errors = $validator->errors();
         $mainError = is_array($errors) ? $errors['name'][0] : 'Непредвиденная ошибка';
@@ -87,14 +89,15 @@ $app->post('/urls', function ($request, $response) use ($router) {
             'error' => $mainError
         ];
 
-        return $this->get('renderer')->render($response->withStatus(422), 'main.phtml', $params);
+        return $this->get('renderer')->render($response->withStatus(422), 'main.index.phtml', $params);
     }
-});
+})->setName('urls.store');
 
 $app->post('/urls/{url_id}/checks', function ($request, $response, array $args) use ($router) {
-    $id = $args['url_id'];
     $dbh = new DBHandler(Connection::get()->connect());
     $checker = new Checker(new Client());
+
+    $id = $args['url_id'];
     $url = $dbh->getUrl($id);
 
     $check = $checker->checkUrl($url['name']);
@@ -111,7 +114,7 @@ $app->post('/urls/{url_id}/checks', function ($request, $response, array $args) 
         }
     }
 
-    return $response->withRedirect($router->urlFor('current', ['id' => $id]));
-});
+    return $response->withRedirect($router->urlFor('urls.show', ['id' => $id]));
+})->setName('urls.checks');
 
 $app->run();
