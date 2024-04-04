@@ -102,17 +102,12 @@ $app->post('/urls/{url_id}/checks', function ($request, $response, array $args) 
 
     $check = $checker->checkUrl($url['name']);
 
-    if (empty($check['error'])) {
+    if (!empty($check['data'])) {
         $dbh->addCheck($id, $check['data']);
-        $this->get('flash')->addMessage('success', 'Страница успешно проверена');
-    } else {
-        if (empty($check['data'])) {
-            $this->get('flash')->addMessage('error', $check['error']);
-        } else {
-            $dbh->addCheck($id, $check['data']);
-            $this->get('flash')->addMessage('warning', $check['error']);
-        }
     }
+
+    $message = $check['message'];
+    $this->get('flash')->addMessage($message['type'], $message['content']);
 
     return $response->withRedirect($router->urlFor('urls.show', ['id' => $id]));
 })->setName('urls.checks');

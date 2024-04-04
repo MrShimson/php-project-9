@@ -22,26 +22,35 @@ class Checker implements \App\Interfaces\CheckerInterface
         try {
             $response = $client->request('GET', $url, ['http_errors' => true]);
         } catch (\GuzzleHttp\Exception\ConnectException) {
-            $message = 'Произошла ошибка при проверке, не удалось подключиться';
+            $message = [
+                'type' => 'error',
+                'content' => 'Произошла ошибка при проверке, не удалось подключиться'
+            ];
 
             return [
-                'error' => $message,
+                'message' => $message,
                 'data' => null
             ];
         } catch (\GuzzleHttp\Exception\RequestException $error) {
             $response = $error->getResponse();
 
             if (empty($response)) {
-                $message = $error->getMessage();
-                $formatted = "Непредвиденная ошибка при проверке: {$message}";
+                $content = $error->getMessage();
+                $message = [
+                    'type' => 'error',
+                    'content' => "Непредвиденная ошибка при проверке: {$content}"
+                ];
 
                 return [
-                    'error' => $formatted,
+                    'message' => $message,
                     'data' => null
                 ];
             }
 
-            $message = 'Проверка была выполнена успешно, но сервер ответил с ошибкой';
+            $message = [
+                'type' => 'warning',
+                'content' => 'Проверка была выполнена успешно, но сервер ответил с ошибкой'
+            ];
         }
 
         $status = $response->getStatusCode();
@@ -64,8 +73,13 @@ class Checker implements \App\Interfaces\CheckerInterface
             }
         }
 
+        $message = isset($message) ? $message : [
+            'type' => 'success',
+            'content' => 'Страница успешно проверена'
+        ];
+
         return [
-            'error' => isset($message) ? $message : null,
+            'message' => $message,
             'data' => $data
         ];
     }
