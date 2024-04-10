@@ -99,7 +99,6 @@ $app->post('/urls/{url_id}/checks', function ($request, $response, array $args) 
 
     $id = $args['url_id'];
     $url = $dbh->getUrl($id);
-
     $check = $checker->checkUrl($url['name']);
 
     if (!empty($check['data'])) {
